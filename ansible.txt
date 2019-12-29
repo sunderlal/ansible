@@ -1,0 +1,66 @@
+apt-get install epel-release
+apt-get update
+apt-get install git python python-dev python-pip openssl ansible
+ansible --version
+vim /etc/ansible/ansible.cfg and enable the below lines
+inventory = /etc/ansible/hosts
+sudo-user=root
+
+test env setup 
+adduser ansadmin
+passwd ansadmin
+visudo(add a line as below)
+ansible ALL=(ALL) NOPASSWD:ALL
+
+check sudo working without asking password
+su - ansadmin
+sudo apt-get update
+
+connecting from 1 machine to 2 using ssh
+ssh ansadmin@2nd machine(do hostname to find machine name) (it will ask password of user ansadmin for 2nd machine)
+
+run below as ansadmin user
+ssh-keygen
+under home dir .ssh copy the public key
+copy sshkeys to all nodes
+ssh-copy-id ansadmin@<testmachine>
+test ssh to testmachine , it should not ask password
+ssh ansadmin@2nd machine
+
+ssh-copy-id localhost(to copy in same host machine)
+
+inventory file /etc/ansible/hosts must be open with root user
+[aiml]
+ip/name
+[local]
+localhost
+
+
+https://github.com/glynnbird/ansible-install-kafka
+
+ansible roles
+ansible-galaxy init apacheframeworks --offline
+
+
+for ubuntu
+- name: Install apache httpd  (state=present is optional)
+  apt:
+    name: apache2
+    state: present
+
+to pick machine groupname[0], means first machine in that group
+groupname[-1] last machine
+groupname[0:1] first 2 machines
+
+ansible <groupname> --list-hosts
+ansible --list-hosts  it will show all machines of all groups
+-a is used to run OS cmd like ansible <groupname> -a "ls -la" is equivalent to ls -la in that machine
+
+ansible <groupname> -s -a "cmd" to run in sudo mode
+use -m to run modules
+
+to initialize tree of server
+ansible-galaxy init aiml --offline
+
+to check syntax before running playbooks
+ansible-playbook <playbook name> --syntax-check
